@@ -1,11 +1,10 @@
-import { createUsersTable, db, seedUsersTable } from "@db/drizzle";
+import { createUsersTable, seedUsersTable } from "@/app/actions";
+import { db } from "@db";
 import { UsersTable } from "@db/tables/Users";
 
-export const UserList = async ({ className }: { className?: string }) => {
-  let users;
-  let startTime = Date.now();
+const fetchUsers = async () => {
   try {
-    users = await db.select().from(UsersTable);
+    return await db.select().from(UsersTable);
   } catch (e: any) {
     if (e.message === `relation "users" does not exist`) {
       console.log(
@@ -13,20 +12,34 @@ export const UserList = async ({ className }: { className?: string }) => {
       );
       // Table is not created yet
       await createUsersTable();
-      await seedUsersTable();
+      await seedUsersTable(3);
 
-      startTime = Date.now();
-      users = await db.select().from(UsersTable);
+      return await db.select().from(UsersTable);
     } else {
       throw e;
     }
   }
+};
+
+export const UserList = async ({ className }: { className?: string }) => {
+  const users = await fetchUsers();
 
   return (
-    <ul className={className}>
-      <li>user 1</li>
-      <li>user 2</li>
-      <li>user 3</li>
-    </ul>
+    <table className={className}>
+      <thead>
+        <tr>
+          <th className="text-left border-b border-b-white">Name</th>
+          <th className="pl-4 text-left border-b border-b-white">Email</th>
+        </tr>
+      </thead>
+      <tbody>
+        {users.map((user) => (
+          <tr className="group/tr" key={user.id}>
+            <td className="group-first/tr:pt-2">{user.name}</td>
+            <td className="pl-4 group-first/tr:pt-2">{user.email}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 };

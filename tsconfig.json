@@ -18,7 +18,9 @@
       }
     ],
     "paths": {
+      "@db": ["./src/db"],
       "@db/*": ["./src/db/*"],
+      "@app/*": ["./src/app/*"],
       "@components/*": ["./src/components/*"],
       "@ui/*": ["./src/ui/*"],
       "@/*": ["./src/*"]
