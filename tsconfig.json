@@ -18,6 +18,9 @@
       }
     ],
     "paths": {
+      "@db/*": ["./src/db/*"],
+      "@components/*": ["./src/components/*"],
+      "@ui/*": ["./src/ui/*"],
       "@/*": ["./src/*"]
     }
   },
