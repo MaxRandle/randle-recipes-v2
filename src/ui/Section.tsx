@@ -9,7 +9,7 @@ export const Section = React.forwardRef(
     return (
       <section ref={ref} className={clsx("py-24", className)} {...props} />
     );
-  }
+  },
 );
 
 Section.displayName = "Section";

@@ -37,9 +37,9 @@ export const seedUsersTable = async (count: number) => {
   console.log(`Seeded ${insertedUsers.length} users`);
 };
 
-export const deleteFirstUser = async () => {
+export const deleteFirstUsers = async (count: number) => {
   try {
-    const users = await db.select().from(UsersTable).limit(1);
+    const users = await db.select().from(UsersTable).limit(count);
 
     if (users.length === 1) {
       const [firstUser] = users;

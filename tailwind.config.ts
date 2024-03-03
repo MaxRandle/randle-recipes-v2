@@ -11,6 +11,10 @@ const config: Config = {
       container: {
         center: true,
         padding: "1.5rem",
+        screens: {
+          DEFAULT: "100%",
+          md: "48rem",
+        },
       },
     },
   },
