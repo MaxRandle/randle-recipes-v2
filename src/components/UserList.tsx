@@ -1,6 +1,6 @@
 import { createUsersTable, seedUsersTable } from "@/app/actions";
 import { db } from "@db";
-import { User, UsersTable } from "@db/tables/Users";
+import { UsersTable } from "@db/tables/Users";
 import clsx from "clsx";
 
 const fetchUsers = async () => {

@@ -1,11 +1,11 @@
 "use server";
 
-import { sql } from "@vercel/postgres";
-import { type NewUser, type User, UsersTable } from "@db/tables/Users";
-import { faker } from "@faker-js/faker";
 import { db } from "@db";
-import { revalidatePath } from "next/cache";
+import { UsersTable, type NewUser, type User } from "@db/tables/Users";
+import { faker } from "@faker-js/faker";
+import { sql } from "@vercel/postgres";
 import { eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 
 export const createUsersTable = async () => {
   await sql.query(`
