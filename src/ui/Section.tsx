@@ -7,7 +7,7 @@ type SectionProps = React.ComponentPropsWithoutRef<"section">;
 export const Section = React.forwardRef(
   ({ className, ...props }: SectionProps, ref: React.Ref<HTMLElement>) => {
     return (
-      <section ref={ref} className={clsx("py-24", className)} {...props} />
+      <section ref={ref} className={clsx("my-24", className)} {...props} />
     );
   },
 );

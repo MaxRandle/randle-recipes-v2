@@ -1,3 +1,4 @@
+import { AddRandomUserForm } from "@components/AddRandomUserForm";
 import { AddUserForm } from "@components/AddUserForm";
 import { DeleteUserForm } from "@components/DeleteUserForm";
 import { UserList, UserListSkeleton } from "@components/UserList";
@@ -11,8 +12,29 @@ export default function Page() {
         <div className="container">
           <h1 className="text-2xl">Page</h1>
           <p className="mt-4">Welcome to the page.</p>
+        </div>
+      </Section>
+
+      <Section>
+        <div className="container">
           <AddUserForm className="mt-4" />
+        </div>
+      </Section>
+
+      <Section>
+        <div className="container">
+          <AddRandomUserForm className="mt-4" />
+        </div>
+      </Section>
+
+      <Section>
+        <div className="container">
           <DeleteUserForm className="mt-4" />
+        </div>
+      </Section>
+
+      <Section>
+        <div className="container">
           <Suspense fallback={<UserListSkeleton className="mt-8" />}>
             <UserList className="mt-8" />
           </Suspense>

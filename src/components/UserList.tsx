@@ -1,4 +1,4 @@
-import { createUsersTable, seedUsersTable } from "@/app/actions";
+import { createUsersTable, seedUsersTable } from "@app/actions";
 import { db } from "@db";
 import { UsersTable } from "@db/tables/Users";
 import clsx from "clsx";

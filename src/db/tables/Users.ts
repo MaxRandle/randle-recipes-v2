@@ -6,6 +6,8 @@ import {
   timestamp,
   uniqueIndex,
 } from "drizzle-orm/pg-core";
+import { z } from "zod";
+import { zfd } from "zod-form-data";
 
 export const UsersTable = pgTable(
   "users",
@@ -24,3 +26,8 @@ export const UsersTable = pgTable(
 
 export type User = InferSelectModel<typeof UsersTable>;
 export type NewUser = InferInsertModel<typeof UsersTable>;
+
+export const userFormDataValidationSchema = zfd.formData({
+  email: zfd.text(z.string().email()),
+  name: zfd.text(z.string()),
+});
