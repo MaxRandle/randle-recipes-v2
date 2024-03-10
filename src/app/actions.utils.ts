@@ -1,4 +1,3 @@
-import { DrizzleError } from "drizzle-orm";
 import { z } from "zod";
 
 type SuccessState<T = undefined> = T extends undefined
@@ -23,10 +22,12 @@ type ErrorState = {
 
 export type State<T = undefined> = SuccessState<T> | ErrorState | null;
 
+export const isZodValidationError = (error: any) => error instanceof z.ZodError;
+
 export const handleZodValidationError = (error: z.ZodError): ErrorState => {
   return {
     status: "error",
-    message: "Schema validation failed",
+    message: "Validation failed",
     errors: error.errors.map((err) => ({
       path: err.path.join("."),
       message: err.message,
@@ -34,9 +35,30 @@ export const handleZodValidationError = (error: z.ZodError): ErrorState => {
   };
 };
 
-export const handleDrizzlePostgresError = (error: DrizzleError): ErrorState => {
+export type DBError = {
+  length: number;
+  name: "error";
+  severity: "ERROR";
+  code: string;
+  detail: string;
+  schema: "public";
+  table: string;
+  constraint: string;
+  file: string;
+  line: string;
+  routine: string;
+};
+
+export const isDuplicateKeyError = (error: any) => error.code === "23505";
+
+export const handleDuplicateKeyError = (error: DBError): ErrorState => {
+  // eg: "Key (email)=(greg.grog@gmail.com) already exists."
+  const matches =
+    error.detail.match(/Key \((.+)\)=\((.+)\) already exists\./) ?? [];
+  const [_, keyName, keyValue] = matches;
+
   return {
     status: "error",
-    message: error.message,
+    message: `Duplicate error: ${keyName} ${keyValue} already exists.`,
   };
 };

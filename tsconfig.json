@@ -18,6 +18,7 @@
       }
     ],
     "paths": {
+      "@utils/*": ["./src/utils/*"],
       "@db": ["./src/db"],
       "@db/*": ["./src/db/*"],
       "@app/*": ["./src/app/*"],

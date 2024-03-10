@@ -5,7 +5,6 @@ import { useFormState, useFormStatus } from "react-dom";
 
 const Button = ({ ...props }: { className?: string }) => {
   const { pending } = useFormStatus();
-  console.log(pending);
 
   return (
     <button

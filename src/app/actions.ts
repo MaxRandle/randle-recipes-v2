@@ -3,20 +3,23 @@
 import { db } from "@db";
 import {
   UsersTable,
-  userFormDataValidationSchema,
+  newUserValidationSchema,
   type NewUser,
   type User,
 } from "@db/tables/Users";
 import { faker } from "@faker-js/faker";
 import { sql } from "@vercel/postgres";
-import { DrizzleError, inArray } from "drizzle-orm";
+import { inArray } from "drizzle-orm";
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import {
+  DBError,
   State,
-  handleDrizzlePostgresError,
+  handleDuplicateKeyError,
   handleZodValidationError,
+  isDuplicateKeyError,
+  isZodValidationError,
 } from "./actions.utils";
 
 export const createUsersTable = async () => {
@@ -35,8 +38,11 @@ export const createNewUser = async (
   formData: FormData,
 ): Promise<State<User>> => {
   try {
-    console.log("formData", formData);
-    const newUserData = userFormDataValidationSchema.parse(formData);
+    // need to extract values from formData
+    const newUserData = newUserValidationSchema.parse({
+      email: formData.get("email"),
+      name: formData.get("name"),
+    });
 
     const insertedUsers = await db
       .insert(UsersTable)
@@ -60,15 +66,18 @@ export const createNewUser = async (
       result: user,
     };
   } catch (error) {
-    // handle zod error
-    if (error instanceof z.ZodError) {
-      return handleZodValidationError(error);
+    if (isZodValidationError(error)) {
+      return handleZodValidationError(error as z.ZodError);
     }
 
-    // handle drizzle error
-    // ...
+    if (isDuplicateKeyError(error)) {
+      return handleDuplicateKeyError(error as DBError);
+    }
 
-    throw error;
+    return {
+      status: "error",
+      message: "An unknown error occurred",
+    };
   }
 };
 
