@@ -1,44 +1,50 @@
-import { createUsersTable, seedUsersTable } from "@app/actions";
+import { createDietaryFlagsTable, seedDietaryFlagsTable } from "@app/actions";
 import { db } from "@db";
-import { UsersTable } from "@db/tables/Users";
+import { DietaryFlagsTable } from "@db/tables/DietaryFlags";
 import { Table, Tbody, Td, Th, Thead, Tr } from "@ui/Table";
 import clsx from "clsx";
 
-const fetchUsers = async () => {
+const fetchDietaryFlags = async () => {
   try {
-    return await db.select().from(UsersTable);
+    return await db.select().from(DietaryFlagsTable);
   } catch (e: any) {
+    console.log("fetchDietaryFlags", e);
+    // if (e.message === `relation "dietary_flags" does not exist`) {
     if (e.code === "42P01") {
       console.log(
         "Table does not exist, creating and seeding it with dummy data now...",
       );
       // Table is not created yet
-      await createUsersTable();
-      await seedUsersTable(3);
+      await createDietaryFlagsTable();
+      await seedDietaryFlagsTable();
 
-      return await db.select().from(UsersTable);
+      return await db.select().from(DietaryFlagsTable);
     } else {
       throw e;
     }
   }
 };
 
-export const UserList = async ({ className }: { className?: string }) => {
-  const users = await fetchUsers();
+export const DietaryFlagDisplay = async ({
+  className,
+}: {
+  className?: string;
+}) => {
+  const dietaryFlags = await fetchDietaryFlags();
 
   return (
     <Table className={clsx("w-full max-w-full", className)}>
       <Thead>
         <Tr>
-          <Th className="w-1/2">Name</Th>
-          <Th className="w-1/2">Email</Th>
+          <Th className="w-1/2">Id</Th>
+          <Th className="w-1/2">Symbol</Th>
         </Tr>
       </Thead>
       <Tbody>
-        {users.map((user) => (
-          <Tr key={user.id}>
-            <Td>{user.name}</Td>
-            <Td>{user.email}</Td>
+        {dietaryFlags.map((dietaryFlag) => (
+          <Tr key={dietaryFlag.id}>
+            <Td>{dietaryFlag.id}</Td>
+            <Td>{dietaryFlag.symbol}</Td>
           </Tr>
         ))}
       </Tbody>
@@ -46,13 +52,17 @@ export const UserList = async ({ className }: { className?: string }) => {
   );
 };
 
-export const UserListSkeleton = ({ className }: { className?: string }) => {
+export const DietaryFlagDisplaySkeleton = ({
+  className,
+}: {
+  className?: string;
+}) => {
   return (
     <Table className={clsx("w-full max-w-full", className)}>
       <Thead>
         <Tr>
-          <Th className="w-1/2">Name</Th>
-          <Th className="w-1/2">Email</Th>
+          <Th className="w-1/2">Id</Th>
+          <Th className="w-1/2">Symbol</Th>
         </Tr>
       </Thead>
       <Tbody>

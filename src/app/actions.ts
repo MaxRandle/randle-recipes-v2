@@ -2,6 +2,11 @@
 
 import { db } from "@db";
 import {
+  CREATE_DIETARY_FLAGS_TABLE_QUERY,
+  DietaryFlagsTable,
+} from "@db/tables/DietaryFlags";
+import {
+  CREATE_USERS_TABLE_QUERY,
   UsersTable,
   newUserValidationSchema,
   type NewUser,
@@ -10,7 +15,6 @@ import {
 import { faker } from "@faker-js/faker";
 import { sql } from "@vercel/postgres";
 import { inArray } from "drizzle-orm";
-
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import {
@@ -22,16 +26,8 @@ import {
   isZodValidationError,
 } from "./actions.utils";
 
-export const createUsersTable = async () => {
-  await sql.query(`
-    CREATE TABLE IF NOT EXISTS users (
-      id SERIAL PRIMARY KEY,
-      name VARCHAR(255) NOT NULL,
-      email VARCHAR(255) UNIQUE NOT NULL,
-      "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-    );
-  `);
-};
+export const createUsersTable = async () =>
+  await sql.query(CREATE_USERS_TABLE_QUERY);
 
 export const createNewUser = async (
   _prevState: State,
@@ -117,5 +113,24 @@ export const deleteFirstUsers = async (count: number): Promise<State> => {
   return {
     status: "success",
     message: `Deleted ${users.length} users`,
+  };
+};
+
+export const createDietaryFlagsTable = async () =>
+  await sql.query(CREATE_DIETARY_FLAGS_TABLE_QUERY);
+
+export const seedDietaryFlagsTable = async () => {
+  const symbols = ["GF", "DF", "VG", "VE", "KE"] as const;
+
+  const insertedFlags = await db
+    .insert(DietaryFlagsTable)
+    .values(symbols.map((symbol) => ({ symbol })))
+    .returning();
+
+  revalidatePath("/");
+
+  return {
+    status: "success",
+    message: `Seeded ${insertedFlags.length} dietary flags`,
   };
 };

@@ -62,3 +62,5 @@ export const handleDuplicateKeyError = (error: DBError): ErrorState => {
     message: `Duplicate error: ${keyName} ${keyValue} already exists.`,
   };
 };
+
+export const isTableNotExistsError = (error: any) => error.code === "42P01";

@@ -77,10 +77,10 @@ export const AddUserForm = ({ ...props }: { className?: string }) => {
         </div>
       </div>
 
-      {formState?.status === "error" && (
-        <p className="mt-4 text-red-500">{formState.message}</p>
-      )}
       <AddUserButton className="mt-4" />
+      {formState?.status === "error" && (
+        <p className="text-red-500">{formState.message}</p>
+      )}
     </form>
   );
 };
