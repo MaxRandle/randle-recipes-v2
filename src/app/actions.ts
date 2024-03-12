@@ -23,8 +23,15 @@ import {
   handleDuplicateKeyError,
   handleZodValidationError,
   isDuplicateKeyError,
+  isTableNotExistsError,
   isZodValidationError,
 } from "./actions.utils";
+import {
+  CREATE_RECIPES_TABLE_QUERY,
+  NewRecipe,
+  RecipesTable,
+} from "@db/tables/Recipes";
+import { slugify } from "@utils/string";
 
 export const createUsersTable = async () =>
   await sql.query(CREATE_USERS_TABLE_QUERY);
@@ -133,4 +140,48 @@ export const seedDietaryFlagsTable = async () => {
     status: "success",
     message: `Seeded ${insertedFlags.length} dietary flags`,
   };
+};
+
+export const createRecipesTable = async () =>
+  sql.query(CREATE_RECIPES_TABLE_QUERY);
+
+export const seedRecipesTable = async (count?: number): Promise<State> => {
+  const users = await db.select().from(UsersTable);
+  // pick random user id
+  const randomUserId = users[Math.floor(Math.random() * users.length)].id;
+
+  try {
+    const dummyRecipes: NewRecipe[] = [
+      {
+        title: "Porridge",
+        subtitle: "Oats with milk",
+        difficulty: "1",
+        intro: "A great way to start the day",
+        author: randomUserId,
+      },
+    ];
+
+    const dummyRecipesWithSlugs = dummyRecipes.map((recipe) => ({
+      ...recipe,
+      slug: slugify(recipe.title),
+    }));
+
+    const insertedRecipes = await db
+      .insert(RecipesTable)
+      .values(dummyRecipesWithSlugs)
+      .returning();
+
+    revalidatePath("/");
+
+    return {
+      status: "success",
+      message: `Seeded ${insertedRecipes.length} recipes`,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      status: "error",
+      message: "An unknown error occurred",
+    };
+  }
 };

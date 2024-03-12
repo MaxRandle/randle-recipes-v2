@@ -21,6 +21,9 @@ export default function Page() {
             <li className="text-lg underline">
               <NextLink href="dietary-flags">DietaryFlags</NextLink>
             </li>
+            <li className="text-lg underline">
+              <NextLink href="recipes">Recipes</NextLink>
+            </li>
           </ul>
         </div>
       </Section>

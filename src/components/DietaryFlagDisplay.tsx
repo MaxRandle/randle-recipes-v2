@@ -9,7 +9,6 @@ const fetchDietaryFlags = async () => {
     return await db.select().from(DietaryFlagsTable);
   } catch (e: any) {
     console.log("fetchDietaryFlags", e);
-    // if (e.message === `relation "dietary_flags" does not exist`) {
     if (e.code === "42P01") {
       console.log(
         "Table does not exist, creating and seeding it with dummy data now...",

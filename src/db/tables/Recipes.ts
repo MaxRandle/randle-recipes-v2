@@ -28,14 +28,47 @@ export const RecipesTable = pgTable("recipes", {
   equipment: text("equipment").array().default([]).notNull(),
 
   // relations
-  author: integer("author").references(() => UsersTable.id),
+  author: integer("author")
+    .references(() => UsersTable.id)
+    .notNull(),
 
-  // tables not yet created:
+  // many-to-many:
   // categories
-  // dietary flags: "GF", "DF", "VG", "VE", "KE"
+  // dietary flags
   // tags
   // favourites
 });
 
 export type Recipe = InferSelectModel<typeof RecipesTable>;
-export type NewRecipe = InferInsertModel<typeof RecipesTable>;
+export type NewRecipe = Omit<
+  InferInsertModel<typeof RecipesTable>,
+  "slug" | "createdAt"
+>;
+
+export const CREATE_RECIPES_TABLE_QUERY = `
+  CREATE TYPE DIFFICULTY AS ENUM ('1', '2', '3', '4', '5');
+
+  CREATE TABLE IF NOT EXISTS recipes (
+    id SERIAL PRIMARY KEY,
+    "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    title TEXT NOT NULL,
+    slug TEXT UNIQUE NOT NULL,
+    subtitle TEXT NOT NULL,
+    intro TEXT NOT NULL,
+    photos TEXT[] NOT NULL DEFAULT '{}',
+    "videoUrl" TEXT,
+    servings INTEGER,
+    "activePrepTime" INTEGER,
+    "inactivePrepTime" INTEGER,
+    tips TEXT[] NOT NULL DEFAULT '{}',
+    difficulty DIFFICULTY NOT NULL,
+    equipment TEXT[] NOT NULL DEFAULT '{}',
+
+    author INTEGER REFERENCES users(id)
+  );
+`;
+
+export const DROP_RECIPES_TABLE_QUERY = `
+  DROP TABLE IF EXISTS recipes;
+  DROP TYPE IF EXISTS DIFFICULTY;
+`;

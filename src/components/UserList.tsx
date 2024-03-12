@@ -30,13 +30,15 @@ export const UserList = async ({ className }: { className?: string }) => {
     <Table className={clsx("w-full max-w-full", className)}>
       <Thead>
         <Tr>
-          <Th className="w-1/2">Name</Th>
-          <Th className="w-1/2">Email</Th>
+          <Th className="w-1/3">Id</Th>
+          <Th className="w-1/3">Name</Th>
+          <Th className="w-1/3">Email</Th>
         </Tr>
       </Thead>
       <Tbody>
         {users.map((user) => (
           <Tr key={user.id}>
+            <Td>{user.id}</Td>
             <Td>{user.name}</Td>
             <Td>{user.email}</Td>
           </Tr>
@@ -51,13 +53,17 @@ export const UserListSkeleton = ({ className }: { className?: string }) => {
     <Table className={clsx("w-full max-w-full", className)}>
       <Thead>
         <Tr>
-          <Th className="w-1/2">Name</Th>
-          <Th className="w-1/2">Email</Th>
+          <Th className="w-1/3">Id</Th>
+          <Th className="w-1/3">Name</Th>
+          <Th className="w-1/3">Email</Th>
         </Tr>
       </Thead>
       <Tbody>
         {[...Array(3)].map((_, i) => (
           <Tr key={i}>
+            <Td>
+              <div className="my-1 h-4 w-full animate-pulse rounded-md bg-slate-800" />
+            </Td>
             <Td>
               <div className="my-1 h-4 w-full animate-pulse rounded-md bg-slate-800" />
             </Td>

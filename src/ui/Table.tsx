@@ -97,7 +97,8 @@ export const Td = React.forwardRef(
         className={clsx(
           "pl-4 pt-1",
           "first:border-l last:border-r last:pr-4",
-          "group-last/tr:border-b group-last/tr:pb-1",
+          "group-first/tr:pt-2 group-last/tr:pb-2",
+          "group-last/tr:border-b",
           "group-last/tr:first:rounded-bl-md group-last/tr:last:rounded-br-md",
           className,
         )}
