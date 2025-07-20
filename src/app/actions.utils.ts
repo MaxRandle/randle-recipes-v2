@@ -59,7 +59,7 @@ export const handleDuplicateKeyError = (error: DBError): ErrorState => {
 
   return {
     status: "error",
-    message: `Duplicate error: ${keyName} ${keyValue} already exists.`,
+    message: `Duplicate key error: ${keyName} ${keyValue} already exists.`,
   };
 };
 
